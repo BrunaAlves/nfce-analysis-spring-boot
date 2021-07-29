@@ -26,10 +26,6 @@ public class User implements Serializable {
     private String name;
 
     @NotBlank
-    @Size(max = 20)
-    private String username;
-
-    @NotBlank
     @Size(max = 50)
     @Email
     private String email;
@@ -43,8 +39,7 @@ public class User implements Serializable {
 
     public User(){}
 
-    public User(String username, String email, String name, String password) {
-        this.username = username;
+    public User(String email, String name, String password) {
         this.email = email;
         this.name = name;
         this.password = password;
