@@ -9,7 +9,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -26,29 +28,26 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private final Set<GrantedAuthority> authorities = new HashSet<>();
 
-    public UserDetailsImpl(String id, String email, String password, String name,
-                           Collection<? extends GrantedAuthority> authorities) {
+    public Collection<GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    public UserDetailsImpl(String id, String email, String password, String name) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
-        this.authorities = authorities;
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     public static UserDetailsImpl build(User user) {
-
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-                .collect(Collectors.toList());
-
         return new UserDetailsImpl(
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getName(),
-                authorities);
+                user.getName());
     }
 
     @Override
@@ -58,21 +57,21 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
