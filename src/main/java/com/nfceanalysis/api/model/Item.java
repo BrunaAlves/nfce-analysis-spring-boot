@@ -15,7 +15,7 @@ import java.util.Date;
 public class Item implements Serializable {
 
     @Id
-    private String _Id;
+    private String _id;
 
     private String itemName;
 
