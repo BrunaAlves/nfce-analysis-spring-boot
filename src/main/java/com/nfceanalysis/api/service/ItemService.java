@@ -1,4 +1,4 @@
-package com.nfceanalysis.api.security.service;
+package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.repository.ItemRepository;

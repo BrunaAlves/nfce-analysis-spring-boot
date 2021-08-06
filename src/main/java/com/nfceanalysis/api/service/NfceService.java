@@ -1,13 +1,14 @@
-package com.nfceanalysis.api.security.service;
+package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.Nfce;
 import com.nfceanalysis.api.repository.NfceRepository;
+import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class NfceService {
@@ -24,4 +25,5 @@ public class NfceService {
         return nfceRepository.findByUser(new ObjectId(user))
                 .orElseThrow(() -> new NoSuchElementException("Nfce Not Found by user: " + user));
     }
+
 }
