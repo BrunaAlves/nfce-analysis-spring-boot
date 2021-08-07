@@ -1,5 +1,6 @@
 package com.nfceanalysis.api.controller;
 
+import com.nfceanalysis.api.model.PieChart;
 import com.nfceanalysis.api.model.Timeline;
 import com.nfceanalysis.api.service.DashboardService;
 import com.nfceanalysis.api.service.ItemService;
@@ -14,12 +15,16 @@ import java.util.List;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-
     @Autowired
     DashboardService dashboardService;
 
     @GetMapping("/timeline")
     public ResponseEntity<List<Timeline>> getTimeline(@RequestParam String userId){
         return ResponseEntity.ok(dashboardService.getTimeline(userId));
+    }
+
+    @GetMapping("/piechart")
+    public ResponseEntity<PieChart> getPieGraph(@RequestParam String userId){
+        return ResponseEntity.ok(dashboardService.getPieChart(userId));
     }
 }

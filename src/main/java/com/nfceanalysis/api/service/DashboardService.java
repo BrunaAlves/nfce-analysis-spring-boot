@@ -1,6 +1,7 @@
 package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.Nfce;
+import com.nfceanalysis.api.model.PieChart;
 import com.nfceanalysis.api.model.Timeline;
 import com.nfceanalysis.api.repository.NfceRepository;
 import lombok.SneakyThrows;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.reverseOrder;
 
@@ -43,5 +47,19 @@ public class DashboardService {
         Collections.sort(timeline, reverseOrder());
 
         return timeline;
+    }
+
+    public PieChart getPieChart(String user){
+        List<Nfce> nfceList = nfceRepository.findByUser(new ObjectId(user))
+                .orElseThrow(() -> new NoSuchElementException("Nfce Not Found by user: " + user));
+
+        List<String> socialNameList = nfceList.stream().map(Nfce::getSocialName).collect(Collectors.toList());
+        Map<String, Long> counts = socialNameList.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+
+        PieChart pieChart = new PieChart();
+        pieChart.setLabel(counts.keySet().stream().collect(Collectors.toList()));
+        pieChart.setSeries( counts.values().stream().collect(Collectors.toList()));
+
+        return pieChart;
     }
 }
