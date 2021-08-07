@@ -27,4 +27,24 @@ public class DashboardController {
     public ResponseEntity<PieChart> getPieGraph(@RequestParam String userId){
         return ResponseEntity.ok(dashboardService.getPieChart(userId));
     }
+
+    @GetMapping("/totalcurrentyear")
+    public ResponseEntity<Float> getTotalSpentInTheYear(@RequestParam String userId){
+        return ResponseEntity.ok(dashboardService.getTotalSpentInTheYear(userId));
+    }
+
+    @GetMapping("/totallastyear")
+    public ResponseEntity<Float> getTotalSpentInTheLastYear(@RequestParam String userId){
+        return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastYear(userId));
+    }
+
+    @GetMapping("/totalcurrentmonth")
+    public ResponseEntity<Float> getTotalSpentInTheCurrentMonth(@RequestParam String userId){
+        return ResponseEntity.ok(dashboardService.getTotalSpentInTheCurrentMonth(userId));
+    }
+
+    @GetMapping("/totallastmonth")
+    public ResponseEntity<Float> getTotalSpentInTheLastMonth(@RequestParam String userId){
+        return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastMonth(userId));
+    }
 }

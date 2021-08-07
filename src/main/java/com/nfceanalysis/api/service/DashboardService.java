@@ -62,4 +62,83 @@ public class DashboardService {
 
         return pieChart;
     }
+
+    public float getTotalSpentInTheLastYear(String user){
+        Calendar calendar = getCalendar();
+        calendar.add(Calendar.YEAR, -1);
+
+        List<Nfce> nfceList =
+                nfceRepository
+                        .searchByIssuanceDate(String.valueOf(calendar.get(Calendar.YEAR)), new ObjectId(user));
+
+        float total = 0;
+
+        for (Nfce nfce : nfceList) {
+            total += Float.parseFloat(nfce.getTotalValueService());
+
+        }
+
+        return total;
+    }
+
+    public float getTotalSpentInTheYear(String user){
+        Calendar calendar = getCalendar();
+
+        List<Nfce> nfceList =
+                nfceRepository
+                        .searchByIssuanceDate(String.valueOf(calendar.get(Calendar.YEAR)), new ObjectId(user));
+
+        float total = 0;
+
+        for (Nfce nfce : nfceList) {
+            total += Float.parseFloat(nfce.getTotalValueService());
+
+        }
+
+        return total;
+    }
+
+    public float getTotalSpentInTheCurrentMonth(String user){
+        Calendar calendar = getCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+
+        List<Nfce> nfceList =
+                nfceRepository
+                        .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+
+        float total = 0;
+        for (Nfce nfce : nfceList) {
+            total += Float.parseFloat(nfce.getTotalValueService());
+
+        }
+
+        return total;
+    }
+
+
+    public float getTotalSpentInTheLastMonth(String user){
+        Calendar calendar = getCalendar();
+        calendar.add(Calendar.MONTH, -1);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+
+        List<Nfce> nfceList =
+                nfceRepository
+                        .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+
+        float total = 0;
+        for (Nfce nfce : nfceList) {
+            total += Float.parseFloat(nfce.getTotalValueService());
+
+        }
+
+        return total;
+    }
+
+    public Calendar getCalendar(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getDefault());
+        calendar.setTime(new Date());
+
+        return calendar;
+    }
 }
