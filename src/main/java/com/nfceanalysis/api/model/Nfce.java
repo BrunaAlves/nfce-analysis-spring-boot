@@ -1,9 +1,11 @@
 package com.nfceanalysis.api.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,11 +28,11 @@ public class Nfce implements Serializable {
 
     private Date createdAt;
 
-    private String totalItems;
+    private float totalItems;
 
-    private String totalValue;
+    private float totalValue;
 
-    private String paidValue;
+    private float paidValue;
 
     private String typePayment;
 
@@ -58,11 +60,11 @@ public class Nfce implements Serializable {
 
     private String issuanceDate;
 
-    private String totalValueService;
+    private float totalValueService;
 
-    private String icmsCalculationBasis;
+    private float icmsCalculationBasis;
 
-    private String icmsValue;
+    private float icmsValue;
 
     private String protocol;
 

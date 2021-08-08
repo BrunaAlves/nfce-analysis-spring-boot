@@ -1,6 +1,7 @@
 package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.Nfce;
+import com.nfceanalysis.api.model.Chart;
 import com.nfceanalysis.api.model.PieChart;
 import com.nfceanalysis.api.model.Timeline;
 import com.nfceanalysis.api.repository.NfceRepository;
@@ -11,9 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Collections.reverseOrder;
 
@@ -56,11 +55,11 @@ public class DashboardService {
         List<String> socialNameList = nfceList.stream().map(Nfce::getSocialName).collect(Collectors.toList());
         Map<String, Long> counts = socialNameList.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
 
-        PieChart pieChart = new PieChart();
-        pieChart.setLabel(counts.keySet().stream().collect(Collectors.toList()));
-        pieChart.setSeries( counts.values().stream().collect(Collectors.toList()));
+        PieChart chart = new PieChart();
+        chart.setLabel(counts.keySet().stream().collect(Collectors.toList()));
+        chart.setSeries( counts.values().stream().collect(Collectors.toList()));
 
-        return pieChart;
+        return chart;
     }
 
     public float getTotalSpentInTheLastYear(String user){
@@ -74,7 +73,7 @@ public class DashboardService {
         float total = 0;
 
         for (Nfce nfce : nfceList) {
-            total += Float.parseFloat(nfce.getTotalValueService());
+            total += nfce.getTotalValueService();
 
         }
 
@@ -91,7 +90,7 @@ public class DashboardService {
         float total = 0;
 
         for (Nfce nfce : nfceList) {
-            total += Float.parseFloat(nfce.getTotalValueService());
+            total += nfce.getTotalValueService();
 
         }
 
@@ -108,7 +107,7 @@ public class DashboardService {
 
         float total = 0;
         for (Nfce nfce : nfceList) {
-            total += Float.parseFloat(nfce.getTotalValueService());
+            total += nfce.getTotalValueService();
 
         }
 
@@ -127,11 +126,43 @@ public class DashboardService {
 
         float total = 0;
         for (Nfce nfce : nfceList) {
-            total += Float.parseFloat(nfce.getTotalValueService());
+            total += nfce.getTotalValueService();
 
         }
 
         return total;
+    }
+
+    public Chart getValuesPerMonths(String user){
+        Calendar calendar = getCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+
+        LinkedHashMap<String, Float> counts = new LinkedHashMap<>();
+
+        int totalMonth = calendar.get(Calendar.MONTH);
+        calendar.add(Calendar.MONTH, -totalMonth);
+
+        for (int i = totalMonth; i >= 0; i--) {
+
+            List<Nfce> nfceList = nfceRepository
+                   .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+
+            float total = 0;
+            for (Nfce nfce : nfceList) {
+                total += nfce.getTotalValueService();
+
+            }
+
+            counts.put(new SimpleDateFormat("MMMM")
+                    .format(calendar.getTime()), total);
+            calendar.add(Calendar.MONTH, 1);
+        }
+
+        Chart chart = new Chart();
+        chart.setLabel(counts.keySet().stream().collect(Collectors.toList()));
+        chart.setSeries(counts.values().stream().collect(Collectors.toList()));
+
+        return chart;
     }
 
     public Calendar getCalendar(){

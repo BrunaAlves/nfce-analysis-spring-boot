@@ -1,10 +1,9 @@
 package com.nfceanalysis.api.controller;
 
+import com.nfceanalysis.api.model.Chart;
 import com.nfceanalysis.api.model.PieChart;
 import com.nfceanalysis.api.model.Timeline;
 import com.nfceanalysis.api.service.DashboardService;
-import com.nfceanalysis.api.service.ItemService;
-import com.nfceanalysis.api.service.NfceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +45,10 @@ public class DashboardController {
     @GetMapping("/totallastmonth")
     public ResponseEntity<Float> getTotalSpentInTheLastMonth(@RequestParam String userId){
         return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastMonth(userId));
+    }
+
+    @GetMapping("/valuespermonths")
+    public ResponseEntity<Chart> getValuesPerMonths(@RequestParam String userId){
+        return ResponseEntity.ok(dashboardService.getValuesPerMonths(userId));
     }
 }
