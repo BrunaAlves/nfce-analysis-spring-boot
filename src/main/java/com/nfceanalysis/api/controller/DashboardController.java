@@ -1,5 +1,6 @@
 package com.nfceanalysis.api.controller;
 
+import com.nfceanalysis.api.model.BarLineChart;
 import com.nfceanalysis.api.model.Chart;
 import com.nfceanalysis.api.model.PieChart;
 import com.nfceanalysis.api.model.Timeline;
@@ -50,5 +51,10 @@ public class DashboardController {
     @GetMapping("/valuespermonths")
     public ResponseEntity<Chart> getValuesPerMonths(@RequestParam String userId){
         return ResponseEntity.ok(dashboardService.getValuesPerMonths(userId));
+    }
+
+    @GetMapping("/icms")
+    public ResponseEntity<BarLineChart> getIcms(@RequestParam String userId){
+        return ResponseEntity.ok(dashboardService.getIcms(userId));
     }
 }

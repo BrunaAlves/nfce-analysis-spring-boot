@@ -1,15 +1,14 @@
 package com.nfceanalysis.api.service;
 
-import com.nfceanalysis.api.model.Nfce;
-import com.nfceanalysis.api.model.Chart;
-import com.nfceanalysis.api.model.PieChart;
-import com.nfceanalysis.api.model.Timeline;
+import com.nfceanalysis.api.model.*;
 import com.nfceanalysis.api.repository.NfceRepository;
 import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -161,6 +160,66 @@ public class DashboardService {
         Chart chart = new Chart();
         chart.setLabel(counts.keySet().stream().collect(Collectors.toList()));
         chart.setSeries(counts.values().stream().collect(Collectors.toList()));
+
+        return chart;
+    }
+
+    public BarLineChart getIcms(String user){
+        Calendar calendar = getCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        List<String> issuanceDateList = new ArrayList<>();
+        List<Float> totalValueServiceList = new ArrayList<>();
+        List<Float> icmsCalculationBasisList = new ArrayList<>();
+        List<Float> icmsValueList = new ArrayList<>();
+
+        int totalMonth = calendar.get(Calendar.MONTH);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.MONTH, -totalMonth);
+
+        for (int i = totalMonth; i >= 0; i--) {
+            List<Nfce> nfceList = nfceRepository
+                    .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+
+            float totalValueService = 0;
+            float totalIcmsCalculationBasis = 0;
+            float totalIcmsValue = 0;
+
+            for (Nfce nfce : nfceList) {
+                totalValueService += nfce.getTotalValueService();
+                totalIcmsCalculationBasis += nfce.getIcmsCalculationBasis();
+                totalIcmsValue += nfce.getIcmsValue();
+            }
+
+            issuanceDateList.add(new SimpleDateFormat("MM/dd/yyyy").format(calendar.getTime()));
+            totalValueServiceList.add(Float.valueOf(df.format(totalValueService)));
+            icmsCalculationBasisList.add(Float.valueOf(df.format(totalIcmsCalculationBasis)));
+            icmsValueList.add(Float.valueOf(df.format(totalIcmsValue)));
+
+            calendar.add(Calendar.MONTH, 1);
+        }
+
+        BarLineChart chart = new BarLineChart();
+        chart.setLabels(issuanceDateList);
+
+        BarLineChartValue icmsValue = new BarLineChartValue();
+        icmsValue.setName("Valor ICMS");
+        icmsValue.setType("column");
+        icmsValue.setData(icmsValueList);
+        chart.getData().add(icmsValue);
+
+        BarLineChartValue totalValueService = new BarLineChartValue();
+        totalValueService.setName("Valor total do serviço");
+        totalValueService.setType("area");
+        totalValueService.setData(totalValueServiceList);
+        chart.getData().add(totalValueService);
+
+        BarLineChartValue icmsCalculationBasis = new BarLineChartValue();
+        icmsCalculationBasis.setName("Base de Cálculo ICMS");
+        icmsCalculationBasis.setType("line");
+        icmsCalculationBasis.setData(icmsCalculationBasisList);
+        chart.getData().add(icmsCalculationBasis);
 
         return chart;
     }
