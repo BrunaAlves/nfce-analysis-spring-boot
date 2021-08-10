@@ -24,4 +24,14 @@ public class ItemService {
         return itemRepository.findByNfce(new ObjectId(nfce));
                // .orElseThrow(() -> new NoSuchElementException("Item Not Found by nfce id: " + nfce));
     }
+
+    public Item updateCategorie(Item item){
+        Item itemObj = itemRepository.findById(item.get_id())
+         .orElseThrow(() -> new NoSuchElementException("Item Not Found id: " + item.get_id()));
+
+        itemObj.setCategorie(item.getCategorie());
+        itemRepository.save(itemObj);
+
+        return itemObj;
+    }
 }

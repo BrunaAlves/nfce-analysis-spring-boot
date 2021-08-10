@@ -30,4 +30,6 @@ public class Item implements Serializable {
     private Date createdAt;
 
     private String nfce;
+
+    private String categorie;
 }

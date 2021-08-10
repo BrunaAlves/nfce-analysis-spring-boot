@@ -25,5 +25,10 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemByNfce(nfceId));
     }
 
+    @PatchMapping("/categorie")
+    public ResponseEntity<Item> getItemsByNfceId(@RequestBody Item item){
+        return ResponseEntity.ok(itemService.updateCategorie(item));
+    }
+
 
 }
