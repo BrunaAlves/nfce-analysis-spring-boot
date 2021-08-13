@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -25,10 +26,16 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemByNfce(nfceId));
     }
 
-    @PatchMapping("/categorie")
-    public ResponseEntity<Item> getItemsByNfceId(@RequestBody Item item){
-        return ResponseEntity.ok(itemService.updateCategorie(item));
+    @PatchMapping
+    public ResponseEntity<Item> patchItem(@RequestBody Item item){
+        return ResponseEntity.ok(itemService.updateCategory(item));
     }
+
+    @PatchMapping("/byitemcode")
+    public ResponseEntity<Item> patchByItemCode(@RequestBody Item item){
+        return ResponseEntity.ok(itemService.updateByItemCode(item));
+    }
+
 
 
 }

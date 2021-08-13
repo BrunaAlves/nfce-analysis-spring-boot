@@ -2,9 +2,9 @@ package com.nfceanalysis.api.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -29,7 +29,9 @@ public class Item implements Serializable {
 
     private Date createdAt;
 
-    private String nfce;
+    private ObjectId nfce;
 
-    private String categorie;
+    private Category category;
+
+    public String getNfce() { return nfce.toHexString(); }
 }
