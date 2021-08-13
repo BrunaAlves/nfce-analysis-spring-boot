@@ -16,4 +16,6 @@ public interface ItemRepository extends MongoRepository<Item, String> {
 
    List<Item> findByNfce(ObjectId nfce);
 
+   List<Item> findByNfceAndCategoryNotNull(ObjectId nfce);
+
 }

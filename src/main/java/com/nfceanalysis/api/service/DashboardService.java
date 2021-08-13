@@ -1,6 +1,7 @@
 package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.*;
+import com.nfceanalysis.api.repository.ItemRepository;
 import com.nfceanalysis.api.repository.NfceRepository;
 import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
@@ -21,6 +22,8 @@ public class DashboardService {
     @Autowired
     NfceRepository nfceRepository;
 
+    @Autowired
+    ItemRepository itemRepository;
 
 
     @SneakyThrows
@@ -47,12 +50,32 @@ public class DashboardService {
         return timeline;
     }
 
-    public PieChart getPieChart(String user){
+    public PieChart getPieChartPerLocation(String user){
         List<Nfce> nfceList = nfceRepository.findByUser(new ObjectId(user))
                 .orElseThrow(() -> new NoSuchElementException("Nfce Not Found by user: " + user));
 
         List<String> socialNameList = nfceList.stream().map(Nfce::getSocialName).collect(Collectors.toList());
         Map<String, Long> counts = socialNameList.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+
+        PieChart chart = new PieChart();
+        chart.setLabel(counts.keySet().stream().collect(Collectors.toList()));
+        chart.setSeries( counts.values().stream().collect(Collectors.toList()));
+
+        return chart;
+    }
+
+    public PieChart getPieChartCategory(String user){
+        List<Nfce> nfceList = nfceRepository.findByUser(new ObjectId(user))
+                .orElseThrow(() -> new NoSuchElementException("Nfce Not Found by user: " + user));
+
+        List<Item> itemList = new ArrayList<>();
+
+        for (Nfce nfce : nfceList) {
+            itemList.addAll(itemRepository.findByNfceAndCategoryNotNull(new ObjectId(nfce.get_id())));
+        }
+
+        List<String> categoryList = itemList.stream().map(e -> e.getCategory().getName() ).collect(Collectors.toList());
+        Map<String, Long> counts = categoryList.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
 
         PieChart chart = new PieChart();
         chart.setLabel(counts.keySet().stream().collect(Collectors.toList()));

@@ -23,9 +23,14 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.getTimeline(userId));
     }
 
-    @GetMapping("/piechart")
+    @GetMapping("/piechart/perlocation")
     public ResponseEntity<PieChart> getPieGraph(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getPieChart(userId));
+        return ResponseEntity.ok(dashboardService.getPieChartPerLocation(userId));
+    }
+
+    @GetMapping("/piechart/category")
+    public ResponseEntity<PieChart> getPieCategory(@RequestParam String userId){
+        return ResponseEntity.ok(dashboardService.getPieChartCategory(userId));
     }
 
     @GetMapping("/totalcurrentyear")

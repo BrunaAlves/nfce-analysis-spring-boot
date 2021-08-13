@@ -26,12 +26,12 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemByNfce(nfceId));
     }
 
-    @PatchMapping
+    @PostMapping
     public ResponseEntity<Item> patchItem(@RequestBody Item item){
         return ResponseEntity.ok(itemService.updateCategory(item));
     }
 
-    @PatchMapping("/byitemcode")
+    @PostMapping("/byitemcode")
     public ResponseEntity<Item> patchByItemCode(@RequestBody Item item){
         return ResponseEntity.ok(itemService.updateByItemCode(item));
     }
