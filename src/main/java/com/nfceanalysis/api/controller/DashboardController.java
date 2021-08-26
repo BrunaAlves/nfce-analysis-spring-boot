@@ -24,13 +24,19 @@ public class DashboardController {
     }
 
     @GetMapping("/piechart/perlocation")
-    public ResponseEntity<PieChart> getPieGraph(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getPieChartPerLocation(userId));
+    public ResponseEntity<PieChart> getPieGraph(@RequestParam String userId,
+                                                @RequestParam Integer year,
+                                                @RequestParam(required = false,defaultValue = "0") Integer month,
+                                                @RequestParam(required = false,defaultValue = "0") Integer day){
+        return ResponseEntity.ok(dashboardService.getPieChartPerLocation(userId, year, month, day));
     }
 
     @GetMapping("/piechart/category")
-    public ResponseEntity<PieChart> getPieCategory(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getPieChartCategory(userId));
+    public ResponseEntity<PieChart> getPieCategory(@RequestParam String userId,
+                                                   @RequestParam Integer year,
+                                                   @RequestParam(required = false,defaultValue = "0") Integer month,
+                                                   @RequestParam(required = false,defaultValue = "0") Integer day){
+        return ResponseEntity.ok(dashboardService.getPieChartCategory(userId, year, month, day));
     }
 
     @GetMapping("/totalcurrentyear")
@@ -53,13 +59,13 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastMonth(userId));
     }
 
-    @GetMapping("/valuespermonths")
-    public ResponseEntity<Chart> getValuesPerMonths(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getValuesPerMonths(userId));
+    @GetMapping("/valuespermonths/{year}")
+    public ResponseEntity<Chart> getValuesPerMonths(@RequestParam String userId, @PathVariable int year){
+        return ResponseEntity.ok(dashboardService.getValuesPerMonths(userId, year));
     }
 
-    @GetMapping("/icms")
-    public ResponseEntity<BarLineChart> getIcms(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getIcms(userId));
+    @GetMapping("/icms/{year}")
+    public ResponseEntity<BarLineChart> getIcms(@RequestParam String userId, @PathVariable int year){
+        return ResponseEntity.ok(dashboardService.getIcms(userId, year));
     }
 }
