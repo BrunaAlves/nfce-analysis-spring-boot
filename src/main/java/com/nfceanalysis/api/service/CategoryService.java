@@ -20,7 +20,21 @@ public class CategoryService {
                 .orElseThrow(() -> new NoSuchElementException("Category Not Found with id: " + categoryId));
     };
 
-    public List<Category> findAll(){
-        return categoryRepository.findAll();
+    public List<Category> findByUserId(String userId){
+        return categoryRepository.findByUserId(new ObjectId(userId))
+                .orElseThrow(() -> new NoSuchElementException("Category Not Found for userId: " + userId));
+    }
+
+    public Category create(Category category){
+        return categoryRepository.save(category);
+    }
+
+    public Category update(Category category){
+        return categoryRepository.save(category);
+    }
+
+    public String delete(String id){
+        categoryRepository.deleteById(id);
+        return "Successfully delete category with id: " + id;
     }
 }

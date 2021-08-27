@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/category")
 public class CategoryController {
 
     @Autowired
@@ -20,9 +20,24 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findById(id));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Category>> findById(){
-        return ResponseEntity.ok(categoryService.findAll());
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<List<Category>> findAllByUser(@PathVariable String userId){
+        return ResponseEntity.ok(categoryService.findByUserId(userId));
+    }
+
+    @PostMapping
+    public ResponseEntity<Category> create(@RequestBody Category category){
+        return ResponseEntity.ok(categoryService.create(category));
+    }
+
+    @PatchMapping
+    public ResponseEntity<Category> update(@RequestBody Category category){
+        return ResponseEntity.ok(categoryService.update(category));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<String> delete(@RequestParam String id){
+        return ResponseEntity.ok(categoryService.delete(id));
     }
 
 
