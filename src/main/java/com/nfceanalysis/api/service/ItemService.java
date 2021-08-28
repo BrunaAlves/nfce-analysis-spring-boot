@@ -32,25 +32,45 @@ public class ItemService {
         Item itemObj = itemRepository.findById(item.get_id())
                 .orElseThrow(() -> new NoSuchElementException("Item Not Found id: " + item.get_id()));
 
-        itemObj.setCategory(item.getCategory());
+        itemObj.setCategoryId(new ObjectId(item.getCategoryId()));
         itemRepository.save(itemObj);
 
         return itemObj;
     }
 
     public Item updateByItemCode(Item item){
-        categoryRepository.findById(new ObjectId(item.getCategory().getId()))
+        categoryRepository.findById(new ObjectId(item.getCategoryId()))
                 .orElseThrow(() ->
-                        new NoSuchElementException("Category Not Found with id: " + item.getCategory().getId()));
+                        new NoSuchElementException("Category Not Found with id: " + item.getCategoryId()));
 
-        List<Item> items = itemRepository.findByItemCode(item.getItemCode())
-                .orElseThrow(() -> new NoSuchElementException("Item Not Found id: " + item.getItemCode()));
+        List<Item> items = getItemByItemCode(item.getItemCode());
 
         for (Item it : items) {
-            it.setCategory(item.getCategory());
+            it.setCategoryId(new ObjectId(item.getCategoryId()));
             updateCategory(it);
         }
 
         return item;
+    }
+
+    public List<Item> getItemByItemCode(String itemCode){
+        return itemRepository.findByItemCode(itemCode)
+                .orElseThrow(() -> new NoSuchElementException("Item Not Found id: " + itemCode));
+    }
+
+
+    public List<Item> getItemByCategoryId(String categoryId){
+        return itemRepository.findByCategoryId(new ObjectId(categoryId));
+    }
+
+    public String removeItemCategory(String categoryId){
+        List<Item> items = getItemByCategoryId(categoryId);
+
+        for (Item it : items) {
+            it.setCategoryId(null);
+            itemRepository.save(it);
+        }
+
+        return "Successfully remove category with id: " + categoryId;
     }
 }

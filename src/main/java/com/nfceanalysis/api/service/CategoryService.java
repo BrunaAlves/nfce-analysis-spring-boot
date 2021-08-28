@@ -18,7 +18,7 @@ public class CategoryService {
     public Category findById(String categoryId){
         return categoryRepository.findById(new ObjectId(categoryId))
                 .orElseThrow(() -> new NoSuchElementException("Category Not Found with id: " + categoryId));
-    };
+    }
 
     public List<Category> findByUserId(String userId){
         return categoryRepository.findByUserId(new ObjectId(userId))

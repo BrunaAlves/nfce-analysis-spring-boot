@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/nfces")
+@RequestMapping("/api/nfce")
 public class NfceController {
 
     @Autowired

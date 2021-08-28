@@ -1,6 +1,7 @@
 package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.*;
+import com.nfceanalysis.api.repository.CategoryRepository;
 import com.nfceanalysis.api.repository.ItemRepository;
 import com.nfceanalysis.api.repository.NfceRepository;
 import lombok.SneakyThrows;
@@ -24,6 +25,9 @@ public class DashboardService {
 
     @Autowired
     ItemRepository itemRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
 
     @SneakyThrows
@@ -103,14 +107,22 @@ public class DashboardService {
         List<Item> itemList = new ArrayList<>();
 
         for (Nfce nfce : nfceList) {
-            itemList.addAll(itemRepository.findByNfceAndCategoryNotNull(new ObjectId(nfce.get_id())));
+            itemList.addAll(itemRepository.findByNfceAndCategoryIdNotNull(new ObjectId(nfce.get_id())));
         }
 
-        List<String> categoryList = itemList.stream().map(e -> e.getCategory().getName() ).collect(Collectors.toList());
-        Map<String, Long> counts = categoryList.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+        List<String> categoryIdList = itemList.stream().map(Item::getCategoryId).collect(Collectors.toList());
+        Map<String, Long> counts = categoryIdList.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+
+        List<String> categoryIdUnique = counts.keySet().stream().collect(Collectors.toList());
+
+        List<String> categoryNameList = new ArrayList<>();
+        categoryIdUnique.forEach(e -> {
+            Optional<Category> category = categoryRepository.findById(new ObjectId(e));
+            categoryNameList.add(category.get().getName());
+        });
 
         PieChart chart = new PieChart();
-        chart.setLabel(counts.keySet().stream().collect(Collectors.toList()));
+        chart.setLabel(categoryNameList);
         chart.setSeries( counts.values().stream().collect(Collectors.toList()));
 
         return chart;

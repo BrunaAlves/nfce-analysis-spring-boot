@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class WebController {
 
-    @RequestMapping("/")
+    @RequestMapping("/api")
     @ResponseBody
     public String index() {
         return "That's pretty basic!";

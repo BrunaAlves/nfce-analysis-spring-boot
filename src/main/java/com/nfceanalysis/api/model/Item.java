@@ -1,5 +1,6 @@
 package com.nfceanalysis.api.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
@@ -31,7 +32,12 @@ public class Item implements Serializable {
 
     private ObjectId nfce;
 
-    private Category category;
+    private ObjectId categoryId;
 
     public String getNfce() { return nfce.toHexString(); }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public String getCategoryId() {
+        return categoryId != null ? categoryId.toHexString() : null;
+    }
 }
