@@ -59,13 +59,13 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastMonth(userId));
     }
 
-    @GetMapping("/valuespermonths/{year}")
-    public ResponseEntity<Chart> getValuesPerMonths(@RequestParam String userId, @PathVariable int year){
+    @GetMapping("/valuespermonths")
+    public ResponseEntity<Chart> getValuesPerMonths(@RequestParam String userId, @RequestParam int year){
         return ResponseEntity.ok(dashboardService.getValuesPerMonths(userId, year));
     }
 
-    @GetMapping("/icms/{year}")
-    public ResponseEntity<BarLineChart> getIcms(@RequestParam String userId, @PathVariable int year){
+    @GetMapping("/icms")
+    public ResponseEntity<BarLineChart> getIcms(@RequestParam String userId, @RequestParam int year){
         return ResponseEntity.ok(dashboardService.getIcms(userId, year));
     }
 }
