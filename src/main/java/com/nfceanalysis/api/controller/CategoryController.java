@@ -35,13 +35,13 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.create(category));
     }
 
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<Category> update(@RequestBody Category category){
         return ResponseEntity.ok(categoryService.update(category));
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> delete(@RequestParam String id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable String id){
         String msg = categoryService.delete(id);
         itemService.removeItemCategory(id);
         return ResponseEntity.ok(msg);
