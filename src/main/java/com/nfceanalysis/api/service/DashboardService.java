@@ -4,13 +4,13 @@ import com.nfceanalysis.api.model.*;
 import com.nfceanalysis.api.repository.CategoryRepository;
 import com.nfceanalysis.api.repository.ItemRepository;
 import com.nfceanalysis.api.repository.NfceRepository;
+import com.nfceanalysis.api.security.service.UserDetailsService;
 import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,11 +29,16 @@ public class DashboardService {
     @Autowired
     CategoryRepository categoryRepository;
 
+    private final UserDetailsService userDetailsService;
+
+    public DashboardService(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @SneakyThrows
-    public List<Timeline> getTimeline(String user){
-        List<Nfce> nfceList = nfceRepository.findByUser(new ObjectId(user))
-                .orElseThrow(() -> new NoSuchElementException("Nfce Not Found by user: " + user));
+    public List<Timeline> getTimeline(){
+        List<Nfce> nfceList = nfceRepository.findByUser(new ObjectId(userDetailsService.getUserId()))
+                .orElseThrow(() -> new NoSuchElementException("Nfce Not Found by user "));
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
@@ -54,7 +59,7 @@ public class DashboardService {
         return timeline;
     }
 
-    public PieChart getPieChartPerLocation(String user, int year, int month, int day){
+    public PieChart getPieChartPerLocation(int year, int month, int day){
         Calendar calendar = getCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -72,7 +77,7 @@ public class DashboardService {
         }
 
         List<Nfce> nfceList = nfceRepository
-                .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+                .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(userDetailsService.getUserId()));
 
         List<String> socialNameList = nfceList.stream().map(Nfce::getSocialName).collect(Collectors.toList());
         Map<String, Long> counts = socialNameList.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
@@ -84,7 +89,7 @@ public class DashboardService {
         return chart;
     }
 
-    public PieChart getPieChartCategory(String user, int year, int month, int day){
+    public PieChart getPieChartCategory(int year, int month, int day){
         Calendar calendar = getCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -102,7 +107,7 @@ public class DashboardService {
         }
 
         List<Nfce> nfceList = nfceRepository
-                .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+                .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(userDetailsService.getUserId()));
 
         List<Item> itemList = new ArrayList<>();
 
@@ -128,13 +133,14 @@ public class DashboardService {
         return chart;
     }
 
-    public float getTotalSpentInTheLastYear(String user){
+    public float getTotalSpentInTheLastYear(){
         Calendar calendar = getCalendar();
         calendar.add(Calendar.YEAR, -1);
 
         List<Nfce> nfceList =
                 nfceRepository
-                        .searchByIssuanceDate(String.valueOf(calendar.get(Calendar.YEAR)), new ObjectId(user));
+                        .searchByIssuanceDate(String.valueOf(calendar.get(Calendar.YEAR)),
+                                new ObjectId(userDetailsService.getUserId()));
 
         float total = 0;
 
@@ -146,12 +152,13 @@ public class DashboardService {
         return total;
     }
 
-    public float getTotalSpentInTheYear(String user){
+    public float getTotalSpentInTheYear(){
         Calendar calendar = getCalendar();
 
         List<Nfce> nfceList =
                 nfceRepository
-                        .searchByIssuanceDate(String.valueOf(calendar.get(Calendar.YEAR)), new ObjectId(user));
+                        .searchByIssuanceDate(String.valueOf(calendar.get(Calendar.YEAR)),
+                                new ObjectId(userDetailsService.getUserId()));
 
         float total = 0;
 
@@ -163,13 +170,14 @@ public class DashboardService {
         return total;
     }
 
-    public float getTotalSpentInTheCurrentMonth(String user){
+    public float getTotalSpentInTheCurrentMonth(){
         Calendar calendar = getCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
 
         List<Nfce> nfceList =
                 nfceRepository
-                        .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+                        .searchByIssuanceDate(sdf.format(calendar.getTime()),
+                                new ObjectId(userDetailsService.getUserId()));
 
         float total = 0;
         for (Nfce nfce : nfceList) {
@@ -181,14 +189,15 @@ public class DashboardService {
     }
 
 
-    public float getTotalSpentInTheLastMonth(String user){
+    public float getTotalSpentInTheLastMonth(){
         Calendar calendar = getCalendar();
         calendar.add(Calendar.MONTH, -1);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
 
         List<Nfce> nfceList =
                 nfceRepository
-                        .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+                        .searchByIssuanceDate(sdf.format(calendar.getTime()),
+                                new ObjectId(userDetailsService.getUserId()));
 
         float total = 0;
         for (Nfce nfce : nfceList) {
@@ -199,7 +208,7 @@ public class DashboardService {
         return total;
     }
 
-    public Chart getValuesPerMonths(String user, int year){
+    public Chart getValuesPerMonths(int year){
         Calendar calendar = getCalendar();
         calendar.set(Calendar.YEAR, year);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
@@ -212,7 +221,7 @@ public class DashboardService {
         for (int i = totalMonth; i >= 0; i--) {
 
             List<Nfce> nfceList = nfceRepository
-                   .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+                   .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(userDetailsService.getUserId()));
 
             float total = 0;
             for (Nfce nfce : nfceList) {
@@ -232,7 +241,7 @@ public class DashboardService {
         return chart;
     }
 
-    public BarLineChart getIcms(String user, int year){
+    public BarLineChart getIcms(int year){
         Calendar calendar = getCalendar();
         calendar.set(Calendar.YEAR, year);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
@@ -249,7 +258,7 @@ public class DashboardService {
 
         for (int i = totalMonth; i >= 0; i--) {
             List<Nfce> nfceList = nfceRepository
-                    .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(user));
+                    .searchByIssuanceDate(sdf.format(calendar.getTime()), new ObjectId(userDetailsService.getUserId()));
 
             float totalValueService = 0;
             float totalIcmsCalculationBasis = 0;

@@ -21,9 +21,9 @@ public class DiscountController {
         return ResponseEntity.ok(discountService.findById(id));
     }
 
-    @GetMapping("/all/{userId}")
-    public ResponseEntity<List<Discount>> findAllByUser(@PathVariable String userId){
-        return ResponseEntity.ok(discountService.findByUserId(userId));
+    @GetMapping("/all")
+    public ResponseEntity<List<Discount>> findAllByUser(){
+        return ResponseEntity.ok(discountService.findByUserId());
     }
 
     @PostMapping

@@ -18,54 +18,54 @@ public class DashboardController {
     @Autowired
     DashboardService dashboardService;
 
+
+
     @GetMapping("/timeline")
-    public ResponseEntity<List<Timeline>> getTimeline(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getTimeline(userId));
+    public ResponseEntity<List<Timeline>> getTimeline(){
+        return ResponseEntity.ok(dashboardService.getTimeline());
     }
 
     @GetMapping("/piechart/perlocation")
-    public ResponseEntity<PieChart> getPieGraph(@RequestParam String userId,
-                                                @RequestParam Integer year,
+    public ResponseEntity<PieChart> getPieGraph(@RequestParam Integer year,
                                                 @RequestParam(required = false,defaultValue = "0") Integer month,
                                                 @RequestParam(required = false,defaultValue = "0") Integer day){
-        return ResponseEntity.ok(dashboardService.getPieChartPerLocation(userId, year, month, day));
+        return ResponseEntity.ok(dashboardService.getPieChartPerLocation(year, month, day));
     }
 
     @GetMapping("/piechart/category")
-    public ResponseEntity<PieChart> getPieCategory(@RequestParam String userId,
-                                                   @RequestParam Integer year,
+    public ResponseEntity<PieChart> getPieCategory(@RequestParam Integer year,
                                                    @RequestParam(required = false,defaultValue = "0") Integer month,
                                                    @RequestParam(required = false,defaultValue = "0") Integer day){
-        return ResponseEntity.ok(dashboardService.getPieChartCategory(userId, year, month, day));
+        return ResponseEntity.ok(dashboardService.getPieChartCategory(year, month, day));
     }
 
     @GetMapping("/totalcurrentyear")
-    public ResponseEntity<Float> getTotalSpentInTheYear(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getTotalSpentInTheYear(userId));
+    public ResponseEntity<Float> getTotalSpentInTheYear(){
+        return ResponseEntity.ok(dashboardService.getTotalSpentInTheYear());
     }
 
     @GetMapping("/totallastyear")
-    public ResponseEntity<Float> getTotalSpentInTheLastYear(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastYear(userId));
+    public ResponseEntity<Float> getTotalSpentInTheLastYear(){
+        return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastYear());
     }
 
     @GetMapping("/totalcurrentmonth")
-    public ResponseEntity<Float> getTotalSpentInTheCurrentMonth(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getTotalSpentInTheCurrentMonth(userId));
+    public ResponseEntity<Float> getTotalSpentInTheCurrentMonth(){
+        return ResponseEntity.ok(dashboardService.getTotalSpentInTheCurrentMonth());
     }
 
     @GetMapping("/totallastmonth")
-    public ResponseEntity<Float> getTotalSpentInTheLastMonth(@RequestParam String userId){
-        return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastMonth(userId));
+    public ResponseEntity<Float> getTotalSpentInTheLastMonth(){
+        return ResponseEntity.ok(dashboardService.getTotalSpentInTheLastMonth());
     }
 
     @GetMapping("/valuespermonths")
-    public ResponseEntity<Chart> getValuesPerMonths(@RequestParam String userId, @RequestParam int year){
-        return ResponseEntity.ok(dashboardService.getValuesPerMonths(userId, year));
+    public ResponseEntity<Chart> getValuesPerMonths(@RequestParam int year){
+        return ResponseEntity.ok(dashboardService.getValuesPerMonths(year));
     }
 
     @GetMapping("/icms")
-    public ResponseEntity<BarLineChart> getIcms(@RequestParam String userId, @RequestParam int year){
-        return ResponseEntity.ok(dashboardService.getIcms(userId, year));
+    public ResponseEntity<BarLineChart> getIcms(@RequestParam int year){
+        return ResponseEntity.ok(dashboardService.getIcms(year));
     }
 }

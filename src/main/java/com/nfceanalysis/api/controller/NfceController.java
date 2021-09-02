@@ -20,9 +20,9 @@ public class NfceController {
         return ResponseEntity.ok(nfceService.getNfceById(id));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Nfce>> findAllByUser(@PathVariable String userId){
-        return ResponseEntity.ok(nfceService.getNfceByUser(userId));
+    @GetMapping("/all")
+    public ResponseEntity<List<Nfce>> findAllByUser(){
+        return ResponseEntity.ok(nfceService.getNfceByUser());
     }
 
 }

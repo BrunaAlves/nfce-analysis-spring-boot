@@ -2,6 +2,7 @@ package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.Discount;
 import com.nfceanalysis.api.repository.DiscountRepository;
+import com.nfceanalysis.api.security.service.UserDetailsService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +16,20 @@ public class DiscountService {
     @Autowired
     DiscountRepository discountRepository;
 
+    private final UserDetailsService userDetailsService;
+
+    public DiscountService(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     public Discount findById(String id){
         return discountRepository.findById(new ObjectId(id))
                 .orElseThrow(() -> new NoSuchElementException("Discount Not Found for id: " + id));
     }
 
-    public List<Discount> findByUserId(String userId){
-        return discountRepository.findByUserId(new ObjectId(userId))
-                .orElseThrow(() -> new NoSuchElementException("Discount Not Found for id: " + userId));
+    public List<Discount> findByUserId(){
+        return discountRepository.findByUserId(new ObjectId(userDetailsService.getUserId()))
+                .orElseThrow(() -> new NoSuchElementException("Discount Not Found by userId"));
     }
 
     public List<Discount> findByItemId(String itemId){
