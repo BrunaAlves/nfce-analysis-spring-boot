@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -59,12 +60,12 @@ public class ItemService {
     }
 
 
-    public List<Item> getItemByCategoryId(String categoryId){
+    public List<Item> getItemsByCategoryId(String categoryId){
         return itemRepository.findByCategoryId(new ObjectId(categoryId));
     }
 
     public String removeItemCategory(String categoryId){
-        List<Item> items = getItemByCategoryId(categoryId);
+        List<Item> items = getItemsByCategoryId(categoryId);
 
         for (Item it : items) {
             it.setCategoryId(null);

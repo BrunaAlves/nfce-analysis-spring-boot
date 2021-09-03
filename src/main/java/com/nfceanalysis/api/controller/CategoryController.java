@@ -1,16 +1,15 @@
 package com.nfceanalysis.api.controller;
 
 import com.nfceanalysis.api.model.Category;
-import com.nfceanalysis.api.model.User;
+import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.service.CategoryService;
 import com.nfceanalysis.api.service.ItemService;
-import org.apache.commons.text.similarity.JaroWinklerDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -50,5 +49,10 @@ public class CategoryController {
         return ResponseEntity.ok(msg);
     }
 
+    @GetMapping("/match/{itemId}")
+    public ResponseEntity<Map<String, Double>> match(@PathVariable String itemId){
+        Item item = itemService.getItemById(itemId);
+        return ResponseEntity.ok(categoryService.categoryMatch(item));
+    }
 
 }

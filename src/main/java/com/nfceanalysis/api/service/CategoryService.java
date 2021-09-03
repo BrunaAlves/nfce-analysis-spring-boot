@@ -1,25 +1,24 @@
 package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.Category;
-import com.nfceanalysis.api.model.User;
+import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.repository.CategoryRepository;
 import com.nfceanalysis.api.security.service.UserDetailsService;
-import com.nfceanalysis.api.security.service.UserDetailsImpl;
 import org.apache.commons.text.similarity.JaroWinklerDistance;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class CategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    private ItemService itemService;
 
     private final UserDetailsService userDetailsService;
 
@@ -49,5 +48,33 @@ public class CategoryService {
     public String delete(String id){
         categoryRepository.deleteById(id);
         return "Successfully delete category with id: " + id;
+    }
+
+    public Map<String, Double> categoryMatch(Item item){
+        final Map<String, Double> categoryAndMatch = new HashMap<>();
+        List<Category> categoryList = findByUserId();
+
+        for (Category category : categoryList) {
+            double match = 0;
+            List<Item> categoryItems = itemService.getItemsByCategoryId(category.getId());
+
+            Item matchItem = categoryItems.stream()
+                    .filter(c -> c.getItemCode().equalsIgnoreCase(item.getItemCode()))
+                    .findFirst()
+                    .orElse(null);
+
+            if(matchItem !=null){
+                match = 1;
+            }else{
+                for (Item categoryItem : categoryItems) {
+                    JaroWinklerDistance distance = new JaroWinklerDistance();
+                    double porcentMatch = distance.apply(item.getItemName(), categoryItem.getItemName());
+                    if(porcentMatch > match) match = porcentMatch;
+                }
+            }
+            categoryAndMatch.put(category.getName(), match);
+        }
+
+        return categoryAndMatch;
     }
 }
