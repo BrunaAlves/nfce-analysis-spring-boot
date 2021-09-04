@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +19,7 @@ public class Category implements Serializable {
     private String id;
     private String name;
     private ObjectId userId;
+    private List<String> itemCodes = new ArrayList<>();
 
     public String getUserId() { return userId.toHexString(); }
 }

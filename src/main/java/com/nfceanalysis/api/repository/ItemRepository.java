@@ -16,12 +16,14 @@ public interface ItemRepository extends MongoRepository<Item, String> {
 
     List<Item> findAll();
 
-    Optional<List<Item>> findByItemCode(String itemCode);
+    Optional<List<Item>> findByAssignedToAndItemCode(ObjectId assignedTo, String itemCode);
 
    List<Item> findByNfce(ObjectId nfce);
 
    List<Item> findByNfceAndCategoryIdNotNull(ObjectId nfce);
 
    List<Item> findByCategoryId(ObjectId categoryId);
+
+    List<Item> findByAssignedToAndItemCodeAndCategoryIdNull(ObjectId assignedTo, String itemCode);
 
 }

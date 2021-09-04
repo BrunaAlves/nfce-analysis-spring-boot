@@ -4,6 +4,7 @@ import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.service.CategoryService;
 import com.nfceanalysis.api.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Item> getItemsById(@PathVariable String id){
-        return ResponseEntity.ok(itemService.getItemById(id));
+       return ResponseEntity.ok(itemService.getItemById(id));
     }
 
     @GetMapping("/nfce/{nfceId}")
@@ -30,14 +31,7 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemByNfce(nfceId));
     }
 
-    @PatchMapping
-    public ResponseEntity<Item> patchItem(@RequestBody Item item){
-        if(item.getCategoryId() != null) categoryService.findById(item.getCategoryId());
-
-        return ResponseEntity.ok(itemService.updateCategory(item));
-    }
-
-    @PostMapping("/byitemcode")
+    @PatchMapping("/byitemcode")
     public ResponseEntity<Item> patchByItemCode(@RequestBody Item item){
         return ResponseEntity.ok(itemService.updateByItemCode(item));
     }

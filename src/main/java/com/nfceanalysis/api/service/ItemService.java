@@ -1,15 +1,17 @@
 package com.nfceanalysis.api.service;
 
+import com.nfceanalysis.api.model.Category;
 import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.repository.CategoryRepository;
 import com.nfceanalysis.api.repository.ItemRepository;
+import com.nfceanalysis.api.security.service.UserDetailsService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -19,6 +21,12 @@ public class ItemService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    private final UserDetailsService userDetailsService;
+
+    public ItemService(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     public Item getItemById(String id){
         return itemRepository.findById(id)
@@ -40,7 +48,7 @@ public class ItemService {
     }
 
     public Item updateByItemCode(Item item){
-        categoryRepository.findById(new ObjectId(item.getCategoryId()))
+        Category category = categoryRepository.findById(new ObjectId(item.getCategoryId()))
                 .orElseThrow(() ->
                         new NoSuchElementException("Category Not Found with id: " + item.getCategoryId()));
 
@@ -51,11 +59,15 @@ public class ItemService {
             updateCategory(it);
         }
 
+        category.getItemCodes().add(item.getItemCode());
+        category.setItemCodes(category.getItemCodes().stream().distinct().collect(Collectors.toList()));
+        categoryRepository.save(category);
+
         return item;
     }
 
     public List<Item> getItemByItemCode(String itemCode){
-        return itemRepository.findByItemCode(itemCode)
+        return itemRepository.findByAssignedToAndItemCode(new ObjectId(userDetailsService.getUserId()), itemCode)
                 .orElseThrow(() -> new NoSuchElementException("Item Not Found id: " + itemCode));
     }
 
@@ -64,7 +76,7 @@ public class ItemService {
         return itemRepository.findByCategoryId(new ObjectId(categoryId));
     }
 
-    public String removeItemCategory(String categoryId){
+    public void removeItemCategory(String categoryId){
         List<Item> items = getItemsByCategoryId(categoryId);
 
         for (Item it : items) {
@@ -72,6 +84,24 @@ public class ItemService {
             itemRepository.save(it);
         }
 
-        return "Successfully remove category with id: " + categoryId;
+    }
+
+    @Scheduled(cron="0 0 0 * * ?", zone="America/Sao_Paulo")
+    public void scheduleItemCategory(){
+        List<Category> categoryList = categoryRepository.findAll();
+
+        for (Category category : categoryList) {
+            category.getItemCodes().forEach(itemcode -> {
+                List<Item> itemList = itemRepository
+                        .findByAssignedToAndItemCodeAndCategoryIdNull(new ObjectId(category.getUserId()), itemcode)
+                        .stream()
+                        .filter(c -> c.getItemCode().equalsIgnoreCase(itemcode))
+                        .collect(Collectors.toList());
+                itemList.forEach(item -> {
+                    item.setCategoryId(new ObjectId(category.getId()));
+                    itemRepository.save(item);
+                });
+            });
+        }
     }
 }

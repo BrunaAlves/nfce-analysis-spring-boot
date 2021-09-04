@@ -3,6 +3,7 @@ package com.nfceanalysis.api.service;
 import com.nfceanalysis.api.model.Category;
 import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.repository.CategoryRepository;
+import com.nfceanalysis.api.repository.ItemRepository;
 import com.nfceanalysis.api.security.service.UserDetailsService;
 import org.apache.commons.text.similarity.JaroWinklerDistance;
 import org.bson.types.ObjectId;
@@ -18,7 +19,7 @@ public class CategoryService {
     CategoryRepository categoryRepository;
 
     @Autowired
-    private ItemService itemService;
+    private ItemRepository itemRepository;
 
     private final UserDetailsService userDetailsService;
 
@@ -56,7 +57,7 @@ public class CategoryService {
 
         for (Category category : categoryList) {
             double match = 0;
-            List<Item> categoryItems = itemService.getItemsByCategoryId(category.getId());
+            List<Item> categoryItems = itemRepository.findByCategoryId(new ObjectId(category.getId()));
 
             Item matchItem = categoryItems.stream()
                     .filter(c -> c.getItemCode().equalsIgnoreCase(item.getItemCode()))

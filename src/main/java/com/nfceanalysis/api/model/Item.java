@@ -34,10 +34,17 @@ public class Item implements Serializable {
 
     private ObjectId categoryId;
 
+    private ObjectId assignedTo;
+
     public String getNfce() { return nfce.toHexString(); }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public String getCategoryId() {
         return categoryId != null ? categoryId.toHexString() : null;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public String getAssignedTo() {
+        return assignedTo != null ? assignedTo.toHexString() : null;
     }
 }
