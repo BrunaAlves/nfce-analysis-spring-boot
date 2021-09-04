@@ -26,7 +26,7 @@ public class Item implements Serializable {
 
     private String unItem;
 
-    private int itemValue;
+    private float itemValue;
 
     private Date createdAt;
 

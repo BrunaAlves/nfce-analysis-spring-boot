@@ -32,7 +32,7 @@ public class DiscountService {
                 .orElseThrow(() -> new NoSuchElementException("Discount Not Found by userId"));
     }
 
-    public List<Discount> findByItemId(String itemId){
+    public Discount findByItemId(String itemId){
         return discountRepository.findByItemId(new ObjectId(itemId))
                 .orElseThrow(() -> new NoSuchElementException("Discount Not Found for id: " + itemId));
     }

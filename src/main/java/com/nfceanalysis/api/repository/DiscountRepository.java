@@ -15,5 +15,5 @@ public interface DiscountRepository extends MongoRepository<Discount, String> {
 
     Optional<Discount> findById(ObjectId id);
     Optional<List<Discount>> findByUserId(Object userId);
-    Optional<List<Discount>> findByItemId(Object userId);
+    Optional<Discount> findByItemId(Object userId);
 }

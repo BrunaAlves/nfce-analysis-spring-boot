@@ -2,6 +2,7 @@ package com.nfceanalysis.api.service;
 
 import com.nfceanalysis.api.model.*;
 import com.nfceanalysis.api.repository.CategoryRepository;
+import com.nfceanalysis.api.repository.DiscountRepository;
 import com.nfceanalysis.api.repository.ItemRepository;
 import com.nfceanalysis.api.repository.NfceRepository;
 import com.nfceanalysis.api.security.service.UserDetailsService;
@@ -28,6 +29,9 @@ public class DashboardService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    DiscountRepository discountRepository;
 
     private final UserDetailsService userDetailsService;
 
@@ -298,6 +302,49 @@ public class DashboardService {
         icmsCalculationBasis.setType("line");
         icmsCalculationBasis.setData(icmsCalculationBasisList);
         chart.getData().add(icmsCalculationBasis);
+
+        return chart;
+    }
+
+    public BarLineChart getItems(String itemCode){
+        List<String> issuanceDateList = new ArrayList<>();
+        List<Float> itemValueList = new ArrayList<>();
+        List<Float> itemDiscountList = new ArrayList<>();
+
+        List<Item> itemList = itemRepository.findByAssignedToAndItemCode(
+                                                new ObjectId(userDetailsService.getUserId()), itemCode)
+                                            .orElse(new ArrayList<>());
+
+        for (Item item : itemList) {
+            Nfce nfce = nfceRepository.findById(item.getNfce()).orElse(null);
+            if(nfce != null){
+                issuanceDateList.add(nfce.getIssuanceDate());
+                itemValueList.add(item.getItemValue()/item.getQtdItem());
+
+                float discount =  discountRepository.findByItemId(item.get_id()).orElse(new Discount()).getDiscount();
+
+                if(discount > 0){
+                    itemDiscountList.add(item.getItemValue()/item.getQtdItem() - discount / item.getQtdItem());
+                }else{
+                    itemDiscountList.add(item.getItemValue()/item.getQtdItem());
+                }
+            }
+        }
+
+        BarLineChart chart = new BarLineChart();
+        chart.setLabels(issuanceDateList);
+
+        BarLineChartValue itemsValue = new BarLineChartValue();
+        itemsValue.setName("Valor total do item");
+        itemsValue.setType("column");
+        itemsValue.setData(itemValueList);
+        chart.getData().add(itemsValue);
+
+        BarLineChartValue totalDiscount = new BarLineChartValue();
+        totalDiscount.setName("Valor com desconto");
+        totalDiscount.setType("column");
+        totalDiscount.setData(itemDiscountList);
+        chart.getData().add(totalDiscount);
 
         return chart;
     }

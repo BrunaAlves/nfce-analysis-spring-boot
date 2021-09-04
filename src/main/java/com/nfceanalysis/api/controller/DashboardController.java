@@ -68,4 +68,9 @@ public class DashboardController {
     public ResponseEntity<BarLineChart> getIcms(@RequestParam int year){
         return ResponseEntity.ok(dashboardService.getIcms(year));
     }
+
+    @GetMapping("/items")
+    public ResponseEntity<BarLineChart> getItems(@RequestParam String itemCode){
+        return ResponseEntity.ok(dashboardService.getItems(itemCode));
+    }
 }
