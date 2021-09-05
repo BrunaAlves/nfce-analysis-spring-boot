@@ -1,7 +1,9 @@
 package com.nfceanalysis.api.model;
 
+import lombok.Getter;
 
-enum Frequency {
+@Getter
+public enum Frequency {
     diario,
     semanal,
     quinzenal,
