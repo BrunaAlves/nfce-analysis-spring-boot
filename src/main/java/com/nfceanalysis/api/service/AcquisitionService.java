@@ -1,15 +1,13 @@
 package com.nfceanalysis.api.service;
 
-import com.nfceanalysis.api.model.Acquisition;
-import com.nfceanalysis.api.model.Frequency;
-import com.nfceanalysis.api.model.Item;
-import com.nfceanalysis.api.model.Nfce;
+import com.nfceanalysis.api.model.*;
 import com.nfceanalysis.api.repository.AcquisitionRepository;
 import com.nfceanalysis.api.repository.ItemRepository;
 import com.nfceanalysis.api.repository.NfceRepository;
 import com.nfceanalysis.api.security.service.UserDetailsService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -62,7 +60,7 @@ public class AcquisitionService {
         if(acquisition.getLastPurchase() != null)
             acquisition.setNextPurchase(
                     findNextAcquisition(acquisition.getLastPurchase(), acquisition.getFrequency()));
-        
+
         return acquisitionRepository.save(acquisition);
     }
 
@@ -128,6 +126,22 @@ public class AcquisitionService {
         }
 
         return null;
+
+    }
+
+    @Scheduled(cron="0 0 0 * * ?", zone="America/Sao_Paulo")
+    public void scheduleLastAndNextAcquisition(){
+        List<Acquisition> acquisitionList = acquisitionRepository.findAll();
+
+        acquisitionList.forEach(acquisition -> {
+            acquisition.setLastPurchase(findLatestIssuanceDateByItemCodes(acquisition.getItemCodes()));
+
+            if(acquisition.getLastPurchase() != null)
+                acquisition.setNextPurchase(
+                        findNextAcquisition(acquisition.getLastPurchase(), acquisition.getFrequency()));
+
+            acquisitionRepository.save(acquisition);
+        });
 
     }
 }
