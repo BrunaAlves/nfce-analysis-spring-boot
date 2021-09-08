@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -16,19 +17,19 @@ public class Discount {
     @Id
     private String id;
 
-    @NotNull
+    @NotBlank
     private float itemValue;
 
-    @NotNull
-    private float discount;
+    @NotBlank
+    private float discountValue;
 
-    @NotNull
+    @NotBlank
     private String itemCode;
 
-    @NotNull
+    @NotBlank
     private ObjectId userId;
 
-    @NotNull
+    @NotBlank
     private ObjectId itemId;
 
     public String getUserId() { return userId.toHexString(); }

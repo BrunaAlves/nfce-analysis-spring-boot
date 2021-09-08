@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface ItemRepository extends MongoRepository<Item, String> {
     Optional<Item> findById(String id);
 
+    Optional<Item> findByIdAndAssignedTo(String id, ObjectId assignedTo);
+
     List<Item> findAll();
 
     Optional<List<Item>> findByAssignedToAndItemCode(ObjectId assignedTo, String itemCode);
@@ -25,5 +27,9 @@ public interface ItemRepository extends MongoRepository<Item, String> {
    List<Item> findByCategoryId(ObjectId categoryId);
 
     List<Item> findByAssignedToAndItemCodeAndCategoryIdNull(ObjectId assignedTo, String itemCode);
+
+    List<Item> findByAssignedToAndCategoryIdNull(ObjectId assignedTo);
+
+    List<Item> findByAssignedTo(ObjectId assignedTo);
 
 }

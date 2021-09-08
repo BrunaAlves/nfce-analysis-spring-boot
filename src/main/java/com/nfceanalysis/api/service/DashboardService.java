@@ -51,6 +51,7 @@ public class DashboardService {
 
         for (Nfce nfce : nfceList) {
             Timeline item = new Timeline();
+            item.setId(nfce.getId());
             item.setTitle(nfce.getSocialName());
             item.setTime(sdf.parse(nfce.getIssuanceDate()));
             item.setType(nfce.getTypePayment());
@@ -116,7 +117,7 @@ public class DashboardService {
         List<Item> itemList = new ArrayList<>();
 
         for (Nfce nfce : nfceList) {
-            itemList.addAll(itemRepository.findByNfceAndCategoryIdNotNull(new ObjectId(nfce.get_id())));
+            itemList.addAll(itemRepository.findByNfceAndCategoryIdNotNull(new ObjectId(nfce.getId())));
         }
 
         List<String> categoryIdList = itemList.stream().map(Item::getCategoryId).collect(Collectors.toList());
@@ -321,10 +322,10 @@ public class DashboardService {
                 issuanceDateList.add(nfce.getIssuanceDate());
                 itemValueList.add(item.getItemValue()/item.getQtdItem());
 
-                float discount =  discountRepository.findByItemId(item.get_id()).orElse(new Discount()).getDiscount();
+                float discountValue =  discountRepository.findByItemId(item.getId()).orElse(new Discount()).getDiscountValue();
 
-                if(discount > 0){
-                    itemDiscountList.add(item.getItemValue()/item.getQtdItem() - discount / item.getQtdItem());
+                if(discountValue > 0){
+                    itemDiscountList.add(item.getItemValue()/item.getQtdItem() - discountValue / item.getQtdItem());
                 }else{
                     itemDiscountList.add(item.getItemValue()/item.getQtdItem());
                 }

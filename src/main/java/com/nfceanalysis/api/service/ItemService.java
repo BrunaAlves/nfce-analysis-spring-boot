@@ -7,6 +7,9 @@ import com.nfceanalysis.api.repository.ItemRepository;
 import com.nfceanalysis.api.security.service.UserDetailsService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +26,14 @@ public class ItemService {
     CategoryRepository categoryRepository;
 
     private final UserDetailsService userDetailsService;
+    //private final MongoTemplate mongoTemplate;
 
     public ItemService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
+    }
+
+    public List<Item> getAll(boolean uniqueItemCode){
+        return itemRepository.findByAssignedTo(new ObjectId(userDetailsService.getUserId()));
     }
 
     public Item getItemById(String id){
@@ -38,8 +46,8 @@ public class ItemService {
     }
 
     public Item updateCategory(Item item){
-        Item itemObj = itemRepository.findById(item.get_id())
-                .orElseThrow(() -> new NoSuchElementException("Item Not Found id: " + item.get_id()));
+        Item itemObj = itemRepository.findById(item.getId())
+                .orElseThrow(() -> new NoSuchElementException("Item Not Found id: " + item.getId()));
 
         itemObj.setCategoryId(new ObjectId(item.getCategoryId()));
         itemRepository.save(itemObj);

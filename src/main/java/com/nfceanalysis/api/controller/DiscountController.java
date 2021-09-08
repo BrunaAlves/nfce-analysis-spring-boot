@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -26,14 +27,9 @@ public class DiscountController {
         return ResponseEntity.ok(discountService.findByUserId());
     }
 
-    @PostMapping
-    public ResponseEntity<Discount> create(@RequestBody Discount Discount){
-        return ResponseEntity.ok(discountService.create(Discount));
-    }
-
-    @PatchMapping
-    public ResponseEntity<Discount> update(@RequestBody Discount discount){
-        return ResponseEntity.ok(discountService.update(discount));
+    @PostMapping("/{itemId}")
+    public ResponseEntity<Discount> create(@PathVariable String itemId, @RequestBody Discount discount){
+        return ResponseEntity.ok(discountService.create(itemId, discount));
     }
 
     @DeleteMapping

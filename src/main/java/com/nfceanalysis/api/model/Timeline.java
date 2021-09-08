@@ -8,6 +8,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class Timeline implements Comparable<Timeline>{
+    private String id;
     private String title;
     private Date time;
     private String type;

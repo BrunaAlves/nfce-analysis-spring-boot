@@ -16,7 +16,7 @@ import java.util.List;
 public class Nfce implements Serializable {
 
     @Id
-    private String _id;
+    private String id;
 
     private List<String> items = new ArrayList<>();
 

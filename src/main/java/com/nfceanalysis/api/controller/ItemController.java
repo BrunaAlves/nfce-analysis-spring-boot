@@ -4,7 +4,6 @@ import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.service.CategoryService;
 import com.nfceanalysis.api.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +30,14 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemByNfce(nfceId));
     }
 
-    @PatchMapping("/byitemcode")
+    @PutMapping("/byitemcode")
     public ResponseEntity<Item> patchByItemCode(@RequestBody Item item){
         return ResponseEntity.ok(itemService.updateByItemCode(item));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Item>> getAll(@RequestParam(required = false) boolean uniqueItemCode){
+        return ResponseEntity.ok(itemService.getAll(uniqueItemCode));
     }
 
 }
