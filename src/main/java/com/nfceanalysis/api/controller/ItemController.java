@@ -36,8 +36,8 @@ public class ItemController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Item>> getAll(@RequestParam(required = false) boolean uniqueItemCode){
-        return ResponseEntity.ok(itemService.getAll(uniqueItemCode));
+    public ResponseEntity<List<Item>> getAll(){
+        return ResponseEntity.ok(itemService.getAll());
     }
 
 }

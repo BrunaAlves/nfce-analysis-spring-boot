@@ -1,5 +1,6 @@
 package com.nfceanalysis.api.service;
 
+import com.mongodb.client.DistinctIterable;
 import com.nfceanalysis.api.model.Category;
 import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.repository.CategoryRepository;
@@ -26,13 +27,12 @@ public class ItemService {
     CategoryRepository categoryRepository;
 
     private final UserDetailsService userDetailsService;
-    //private final MongoTemplate mongoTemplate;
 
     public ItemService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-    public List<Item> getAll(boolean uniqueItemCode){
+    public List<Item> getAll(){
         return itemRepository.findByAssignedTo(new ObjectId(userDetailsService.getUserId()));
     }
 
