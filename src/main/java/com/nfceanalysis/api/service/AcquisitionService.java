@@ -45,6 +45,7 @@ public class AcquisitionService {
     }
 
     public Acquisition create(Acquisition acquisition){
+        acquisition.setUserId(new ObjectId(userDetailsService.getUserId()));
         acquisition.setLastPurchase(findLatestIssuanceDateByItemCodes(acquisition.getItemCodes()));
 
         if(acquisition.getLastPurchase() != null)
@@ -55,6 +56,7 @@ public class AcquisitionService {
     }
 
     public Acquisition update(Acquisition acquisition){
+        acquisition.setUserId(new ObjectId(userDetailsService.getUserId()));
         acquisition.setLastPurchase(findLatestIssuanceDateByItemCodes(acquisition.getItemCodes()));
 
         if(acquisition.getLastPurchase() != null)

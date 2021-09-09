@@ -1,6 +1,5 @@
 package com.nfceanalysis.api.service;
 
-import com.mongodb.client.DistinctIterable;
 import com.nfceanalysis.api.model.Category;
 import com.nfceanalysis.api.model.Item;
 import com.nfceanalysis.api.repository.CategoryRepository;
@@ -9,12 +8,13 @@ import com.nfceanalysis.api.security.service.UserDetailsService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,12 +28,20 @@ public class ItemService {
 
     private final UserDetailsService userDetailsService;
 
+    @Autowired
+    MongoTemplate mongoTemplate;
+
     public ItemService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-    public List<Item> getAll(){
-        return itemRepository.findByAssignedTo(new ObjectId(userDetailsService.getUserId()));
+    public List<Item> getAll(boolean uniqueItemCode){
+        List<Item> itemList = itemRepository.findByAssignedTo(new ObjectId(userDetailsService.getUserId()));
+
+        if(uniqueItemCode)
+            return itemList.stream().filter(distinctByKey(i -> i.getItemCode())).collect(Collectors.toList());
+
+        return itemList;
     }
 
     public Item getItemById(String id){
@@ -111,5 +119,11 @@ public class ItemService {
                 });
             });
         }
+    }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
+    {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }
