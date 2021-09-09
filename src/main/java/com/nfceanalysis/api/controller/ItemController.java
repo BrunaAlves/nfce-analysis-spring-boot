@@ -40,4 +40,9 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getAll(uniqueItemCode));
     }
 
+    @GetMapping("/byitemcode")
+    public ResponseEntity<List<Item>> getByItemCode(@RequestParam(required = false) List<String> itemCodes){
+        return ResponseEntity.ok(itemService.getItemCodeList(itemCodes));
+    }
+
 }

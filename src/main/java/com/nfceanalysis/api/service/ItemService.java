@@ -44,6 +44,21 @@ public class ItemService {
         return itemList;
     }
 
+    public List<Item> getItemCodeList(List<String> itemCodes){
+        List<Item> itemList = new ArrayList<>();
+
+        for (String itemCode : itemCodes) {
+            Optional<Item> item = itemRepository
+                    .findByAssignedToAndItemCode(new ObjectId(userDetailsService.getUserId()), itemCode)
+                    .orElse(null).stream()
+                    .findFirst();
+
+            item.ifPresent(itemList::add);
+        }
+
+        return itemList;
+    }
+
     public Item getItemById(String id){
         return itemRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Item Not Found with id: " + id));
