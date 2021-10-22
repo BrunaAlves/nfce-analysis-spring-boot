@@ -221,7 +221,9 @@ public class DashboardService {
         LinkedHashMap<String, Float> counts = new LinkedHashMap<>();
 
         int totalMonth = calendar.get(Calendar.MONTH);
-        calendar.add(Calendar.MONTH, -totalMonth);
+        calendar.set(Calendar.MONTH, 0);
+
+        if(calendar.get(Calendar.YEAR) < getCalendar().get(Calendar.YEAR)) totalMonth = 12;
 
         for (int i = totalMonth; i >= 0; i--) {
 
@@ -257,9 +259,11 @@ public class DashboardService {
         List<Float> icmsCalculationBasisList = new ArrayList<>();
         List<Float> icmsValueList = new ArrayList<>();
 
-        int totalMonth = calendar.get(Calendar.MONTH);
+        int totalMonth = calendar.get(Calendar.MONTH) + 1;
         calendar.set(Calendar.DAY_OF_MONTH, 1);
-        calendar.add(Calendar.MONTH, -totalMonth);
+        calendar.set(Calendar.MONTH, 0);
+
+        if(calendar.get(Calendar.YEAR) < getCalendar().get(Calendar.YEAR)) totalMonth = 12;
 
         for (int i = totalMonth; i >= 0; i--) {
             List<Nfce> nfceList = nfceRepository
