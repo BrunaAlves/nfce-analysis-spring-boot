@@ -98,7 +98,7 @@ public class AcquisitionService {
 
     public Date findNextAcquisition(Date date, Frequency frequency){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getDefault());
+        calendar.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
         calendar.setTime(date);
 
         if(frequency.equals(Frequency.diario)){
@@ -128,22 +128,6 @@ public class AcquisitionService {
         }
 
         return null;
-
-    }
-
-    @Scheduled(cron="0 0 0 * * ?", zone="America/Sao_Paulo")
-    public void scheduleLastAndNextAcquisition(){
-        List<Acquisition> acquisitionList = acquisitionRepository.findAll();
-
-        acquisitionList.forEach(acquisition -> {
-            acquisition.setLastPurchase(findLatestIssuanceDateByItemCodes(acquisition.getItemCodes()));
-
-            if(acquisition.getLastPurchase() != null)
-                acquisition.setNextPurchase(
-                        findNextAcquisition(acquisition.getLastPurchase(), acquisition.getFrequency()));
-
-            acquisitionRepository.save(acquisition);
-        });
 
     }
 }

@@ -356,7 +356,7 @@ public class DashboardService {
 
     public Calendar getCalendar(){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getDefault());
+        calendar.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
         calendar.setTime(new Date());
 
         return calendar;

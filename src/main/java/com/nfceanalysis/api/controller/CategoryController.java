@@ -2,8 +2,11 @@ package com.nfceanalysis.api.controller;
 
 import com.nfceanalysis.api.model.Category;
 import com.nfceanalysis.api.model.Item;
+import com.nfceanalysis.api.model.LogType;
+import com.nfceanalysis.api.model.TriggerLog;
 import com.nfceanalysis.api.service.CategoryService;
 import com.nfceanalysis.api.service.ItemService;
+import com.nfceanalysis.api.service.TriggerLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,9 @@ public class CategoryController {
 
     @Autowired
     ItemService itemService;
+
+    @Autowired
+    TriggerLogService triggerLogService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Category> findById(@PathVariable String id){
@@ -53,6 +59,17 @@ public class CategoryController {
     public ResponseEntity<Map<String, Double>> match(@PathVariable String itemId){
         Item item = itemService.getItemById(itemId);
         return ResponseEntity.ok(categoryService.categoryMatch(item));
+    }
+
+    @PostMapping("/triggerlog")
+    public ResponseEntity<?> updateTriggerLogs(){
+        triggerLogService.updateAllCategoryByUser();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/triggerlog")
+    public ResponseEntity<TriggerLog> getLatestTriggerLogs(){
+        return ResponseEntity.ok(triggerLogService.getLatestTriggerLog(LogType.category));
     }
 
 }

@@ -117,25 +117,6 @@ public class ItemService {
 
     }
 
-    @Scheduled(cron="0 0 0 * * ?", zone="America/Sao_Paulo")
-    public void scheduleItemCategory(){
-        List<Category> categoryList = categoryRepository.findAll();
-
-        for (Category category : categoryList) {
-            category.getItemCodes().forEach(itemcode -> {
-                List<Item> itemList = itemRepository
-                        .findByAssignedToAndItemCodeAndCategoryIdNull(new ObjectId(category.getUserId()), itemcode)
-                        .stream()
-                        .filter(c -> c.getItemCode().equalsIgnoreCase(itemcode))
-                        .collect(Collectors.toList());
-                itemList.forEach(item -> {
-                    item.setCategoryId(new ObjectId(category.getId()));
-                    itemRepository.save(item);
-                });
-            });
-        }
-    }
-
     public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
     {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
