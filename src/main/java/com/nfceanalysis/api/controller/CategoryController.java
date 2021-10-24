@@ -40,12 +40,12 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<Category> create(@RequestBody Category category){
-        return ResponseEntity.ok(categoryService.create(category));
+        return ResponseEntity.ok(categoryService.save(category));
     }
 
     @PutMapping
     public ResponseEntity<Category> update(@RequestBody Category category){
-        return ResponseEntity.ok(categoryService.update(category));
+        return ResponseEntity.ok(categoryService.save(category));
     }
 
     @DeleteMapping("/{id}")

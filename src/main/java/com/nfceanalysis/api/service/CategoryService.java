@@ -38,13 +38,23 @@ public class CategoryService {
                 .orElseThrow(() -> new NoSuchElementException("Category Not Found for the user"));
     }
 
-    public Category create(Category category){
-        return categoryRepository.save(category);
+    public Category save(Category category){
+        category.setUserId(new ObjectId(userDetailsService.getUserId()));
+        Category cat = categoryRepository.save(category);
+
+        category.getItemCodes().forEach(iCode -> {
+            List<Item> itemList = itemRepository
+                    .findByAssignedToAndItemCode(new ObjectId(userDetailsService.getUserId()), iCode)
+                    .orElse(null);
+            if(itemList!=null){
+                itemList.forEach(it -> it.setCategoryId(new ObjectId(cat.getId())));
+                itemRepository.saveAll(itemList);
+            }
+        });
+
+        return category;
     }
 
-    public Category update(Category category){
-        return categoryRepository.save(category);
-    }
 
     public String delete(String id){
         categoryRepository.deleteById(id);
