@@ -76,7 +76,7 @@ public class TriggerLogService {
 
         TriggerLog triggerLog = new TriggerLog();
         triggerLog.setUserId(new ObjectId(userId));
-        triggerLog.setLogType(LogType.category);
+        triggerLog.setLogType(LogType.acquisition);
         triggerLog.setUpdateAt(ZonedDateTime.ofInstant(Instant.now(), ZoneId.of(ZONE_SAO_PAULO)).toLocalDateTime());
         triggerLogRepository.save(triggerLog);
     }
